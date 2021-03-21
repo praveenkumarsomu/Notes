@@ -6,27 +6,43 @@
 //
 
 import XCTest
+@testable import Notes
 
-class GetNotesTests: XCTestCase {
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+class GetNotesTests: NotesTestCase {    
+    func testGettingNotes() {
+        /// Assign
+        var notesList: Notes = []
+        mockRepo.addMockNotes()
+        getNotesListViewModel.getNotesCompletion = { result in
+            switch result {
+            case .success(let notes):
+                notesList = notes
+            default: break
+            }
         }
+        /// Act
+        getNotesListViewModel.getNotes()
+        /// Assert
+        XCTAssertFalse(notesList.isEmpty, "Notes list is empty it should contain one value")
+        XCTAssertEqual(notesList, mockRepo.notes, "Get notes use case not returned same value as in Repository")
+    }
+    func testGettingNotesError() {
+        /// Assign
+        var errorDescription: String = ""
+        mockRepo.isError = true
+        mockRepo.addMockNotes()
+        getNotesListViewModel.getNotesCompletion = { result in
+            switch result {
+            case .failure(let error):
+                errorDescription = error.getMessage()
+            default: break
+            }
+        }
+        /// Act
+        getNotesListViewModel.getNotes()
+        /// Assert
+        XCTAssertFalse(errorDescription.isEmpty, "Notes id not found error description not returned properly")
+        XCTAssertEqual(errorDescription, NotesError.idNotFound().getMessage(), "Notes id not found error description is incorrect")
     }
 
 }

@@ -1,5 +1,5 @@
 //
-//  EditNotesTests.swift
+//  DeleteNotesUseCase.swift
 //  NotesTests
 //
 //  Created by Praveen on 21/3/21.
@@ -8,20 +8,19 @@
 import XCTest
 @testable import Notes
 
-class EditNotesTests: NotesTestCase {
-    var editNoteViewModel: CreateOrEditNoteViewModel!
+class DeleteNotesTests: NotesTestCase {
     override func setUpWithError() throws {
         try! super.setUpWithError()
-        let editUseCase = EditNoteUseCase(notesRepository: repository)
-        editNoteViewModel = CreateOrEditNoteViewModel(editUseCase: editUseCase)
         mockRepo.addMockNotes()
     }
-    func testEditNote() {
+
+    func testDeletingNotes() {
         /// Assign
         var notesList: Notes = []
-        let modifiedNote = Note(id: "id", title: "titlE", description: "modified description")
+        getNotesListViewModel.deleteNoteCompletion = { result in
+        }
         /// Act
-        editNoteViewModel.editNote(note: modifiedNote)
+        getNotesListViewModel.deleteNote(note: mockRepo.notes.first!)
         getNotesListViewModel.getNotes()
         getNotesListViewModel.getNotesCompletion = { result in
             switch result {
@@ -30,16 +29,14 @@ class EditNotesTests: NotesTestCase {
             default: break
             }
         }
-        getNotesListViewModel.getNotes()
         /// Assert
-        XCTAssertEqual(notesList, [modifiedNote], "Notes data is not modified properly")
+        XCTAssertTrue(notesList.isEmpty, "Deleted note is retuned from repo")
     }
-    func testEditNoteError() {
+    func testDeleteNoteError() {
         /// Assign
         var errorDescription: String = ""
-        let modifiedNote = Note(id: "id", title: "titlE", description: "modified description")
         mockRepo.isError = true
-        editNoteViewModel.completion = { result in
+        getNotesListViewModel.deleteNoteCompletion = { result in
             switch result {
             case .failure(let error):
                 errorDescription = error.getMessage()
@@ -47,9 +44,10 @@ class EditNotesTests: NotesTestCase {
             }
         }
         /// Act
-        editNoteViewModel.editNote(note: modifiedNote)
+        getNotesListViewModel.deleteNote(note: mockRepo.notes.first!)
         /// Assert
-        XCTAssertNotEqual(mockRepo.notes, [modifiedNote])
+        XCTAssertFalse(mockRepo.notes.isEmpty, "In case of Deletion failure note is removed from repo")
         XCTAssertEqual(errorDescription, NotesError.idNotFound().getMessage(), "Notes id not found error description is incorrect")
     }
+
 }

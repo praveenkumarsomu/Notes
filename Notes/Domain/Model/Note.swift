@@ -8,7 +8,7 @@
 import Foundation
 
 /// Note Model used through out the Application
-struct Note {
+struct Note: Equatable {
     var id: String?
     var title: String?
     var description: String?

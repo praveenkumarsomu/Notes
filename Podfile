@@ -9,3 +9,10 @@ target 'Notes' do
   pod 'FirebaseFirestoreSwift'
   pod 'Swinject'
 end
+
+target 'NotesTests' do
+  use_frameworks!
+  pod 'Firebase/Firestore'
+  pod 'FirebaseFirestoreSwift'
+  pod 'Swinject'
+end

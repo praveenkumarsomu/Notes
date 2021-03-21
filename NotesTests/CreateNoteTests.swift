@@ -1,5 +1,5 @@
 //
-//  EditNotesTests.swift
+//  CreateNoteTests.swift
 //  NotesTests
 //
 //  Created by Praveen on 21/3/21.
@@ -8,20 +8,21 @@
 import XCTest
 @testable import Notes
 
-class EditNotesTests: NotesTestCase {
+class CreateNoteTests: NotesTestCase {
     var editNoteViewModel: CreateOrEditNoteViewModel!
     override func setUpWithError() throws {
         try! super.setUpWithError()
-        let editUseCase = EditNoteUseCase(notesRepository: repository)
-        editNoteViewModel = CreateOrEditNoteViewModel(editUseCase: editUseCase)
+        let createUseCase = CreateNoteUseCase(notesRepository: repository)
+        editNoteViewModel = CreateOrEditNoteViewModel(usecase: createUseCase)
         mockRepo.addMockNotes()
     }
-    func testEditNote() {
+
+    func testCreatingNewNote() {
         /// Assign
         var notesList: Notes = []
-        let modifiedNote = Note(id: "id", title: "titlE", description: "modified description")
+        let newNote = Note(id: "id", title: "titlE", description: "modified description")
         /// Act
-        editNoteViewModel.editNote(note: modifiedNote)
+        editNoteViewModel.createNote(note: newNote)
         getNotesListViewModel.getNotes()
         getNotesListViewModel.getNotesCompletion = { result in
             switch result {
@@ -32,12 +33,14 @@ class EditNotesTests: NotesTestCase {
         }
         getNotesListViewModel.getNotes()
         /// Assert
-        XCTAssertEqual(notesList, [modifiedNote], "Notes data is not modified properly")
+        XCTAssertEqual(mockRepo.notes.count, 2, "Creating a note not added it to the repo")
+        XCTAssertEqual(notesList, mockRepo.notes , "Notes is not returned properly after creating new note")
     }
-    func testEditNoteError() {
+
+    func testCreatingNewNoteError() {
         /// Assign
         var errorDescription: String = ""
-        let modifiedNote = Note(id: "id", title: "titlE", description: "modified description")
+        let newNote = Note(id: "id", title: "titlE", description: "modified description")
         mockRepo.isError = true
         editNoteViewModel.completion = { result in
             switch result {
@@ -47,9 +50,10 @@ class EditNotesTests: NotesTestCase {
             }
         }
         /// Act
-        editNoteViewModel.editNote(note: modifiedNote)
+        editNoteViewModel.createNote(note: newNote)
         /// Assert
-        XCTAssertNotEqual(mockRepo.notes, [modifiedNote])
-        XCTAssertEqual(errorDescription, NotesError.idNotFound().getMessage(), "Notes id not found error description is incorrect")
+        XCTAssertEqual(mockRepo.notes.count, 1, "Creating a note not added it to the repo")
+        XCTAssertEqual(errorDescription, NotesError.genericError().getMessage())
     }
+
 }
