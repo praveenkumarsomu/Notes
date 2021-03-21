@@ -13,8 +13,8 @@ class CreateOrEditNoteViewModel {
     var createNoteUsecase: CreateNoteUseCase!
     var editNoteUsecase: EditNoteUseCase!
     var completion: ((Completion<Void>) -> Void)?
-    init(usecase: CreateNoteUseCase) {
-        self.createNoteUsecase = usecase
+    init(createNoteUsecase: CreateNoteUseCase) {
+        self.createNoteUsecase = createNoteUsecase
     }
     init(editUseCase: EditNoteUseCase) {
         self.editNoteUsecase = editUseCase

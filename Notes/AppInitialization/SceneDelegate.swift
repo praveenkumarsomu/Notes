@@ -14,11 +14,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        /// Initialize root view 
+        /// Initialize root view
         var contentView: NotesListView!
         var getNotesViewModel: NotesListViewModel?
         if let getNotesUseCase = container.resolve(GetNotesUseCase?.self), let getUseCase = getNotesUseCase, let deleteNotesUseCase = container.resolve(DeleteNoteUseCase?.self), let deleteUseCase = deleteNotesUseCase {
-            getNotesViewModel = NotesListViewModel(usecase: getUseCase, deleteUseCase: deleteUseCase)
+            getNotesViewModel = NotesListViewModel(getNotesUsecase: getUseCase, deleteUseCase: deleteUseCase)
             contentView = NotesListView(viewModel: getNotesViewModel)
         }
         // Use a UIHostingController as window root view controller.

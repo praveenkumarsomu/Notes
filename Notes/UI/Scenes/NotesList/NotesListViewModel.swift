@@ -13,8 +13,8 @@ class NotesListViewModel {
     let deleteNoteUseCase: DeleteNoteUseCase
     var getNotesCompletion: ((Completion<Notes>) -> Void)?
     var deleteNoteCompletion: ((Completion<Void>) -> Void)?
-    init(usecase: GetNotesUseCase, deleteUseCase: DeleteNoteUseCase) {
-        self.getNotesUseCase = usecase
+    init(getNotesUsecase: GetNotesUseCase, deleteUseCase: DeleteNoteUseCase) {
+        self.getNotesUseCase = getNotesUsecase
         self.deleteNoteUseCase = deleteUseCase
     }
     /// Get's list of notes from Repository

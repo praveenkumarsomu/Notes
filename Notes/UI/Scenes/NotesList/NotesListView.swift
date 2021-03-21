@@ -74,7 +74,7 @@ extension NotesListView {
             createNoteView = CreateOrEditNoteView(viewModel: editNoteViewModel)
             createNoteView.note = note
         } else if let createNoteUseCase = container.resolve(CreateNoteUseCase?.self), let usecase = createNoteUseCase {
-            let createNoteViewModel = CreateOrEditNoteViewModel(usecase: usecase)
+            let createNoteViewModel = CreateOrEditNoteViewModel(createNoteUsecase: usecase)
             createNoteView = CreateOrEditNoteView(viewModel: createNoteViewModel)
             createNoteView.note = note
         }
